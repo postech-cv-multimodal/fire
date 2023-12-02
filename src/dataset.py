@@ -11,7 +11,7 @@ from typing import Dict, List, Tuple
 from torch.utils.data import Dataset
 from transformers import AutoProcessor
 
-from data_utils import read_json
+from data_utils import read_json, read_text
 
 class CUB_200_2011(Dataset):
     def __init__(self, 
@@ -23,7 +23,7 @@ class CUB_200_2011(Dataset):
                  ):
         self.vision_dir = vision_dir
         self.data = read_json(data_path)
-        self.attributes = read_json(attributes_path) if not attributes else attributes
+        self.attributes = read_text(attributes_path) if not attributes else attributes
             
         self.processor = processor
 
