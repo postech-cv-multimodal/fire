@@ -16,13 +16,15 @@ from data_utils import read_json, read_text
 class CUB_200_2011(Dataset):
     def __init__(self, 
                  processor: AutoProcessor,
-                 data_path: str, 
-                 vision_dir: str, 
+                 data : dict=None,
+                 data_path: str=None, 
+                 vision_dir: str=None, 
                  attributes_path: str=None,
                  attributes: List[str]=None
                  ):
         self.vision_dir = vision_dir
-        self.data = read_json(data_path)
+        
+        self.data = data if data is not None else read_json(data_path)
         self.attributes = read_text(attributes_path) if not attributes else attributes
             
         self.processor = processor
