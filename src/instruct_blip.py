@@ -72,7 +72,7 @@ class InstructBlipForImageRetrieval(InstructBlipPreTrainedModel):
 
     def forward(
         self,
-        image_embeds : torch.FloatTensor, 
+        pixel_values : torch.FloatTensor, 
         qformer_input_ids: torch.FloatTensor,
         qformer_attention_mask: Optional[torch.LongTensor] = None,
         output_attentions: Optional[bool] = None,
@@ -92,13 +92,13 @@ class InstructBlipForImageRetrieval(InstructBlipPreTrainedModel):
 
         # step 1: forward the images through the vision encoder,
         # to get image embeddings of shape (batch_size, seq_len, hidden_size)
-        #vision_outputs = self.vision_model(
-        #    pixel_values=pixel_values,
-        #    output_attentions=output_attentions,
-        #    output_hidden_states=output_hidden_states,
-        #    return_dict=return_dict,
-        #)
-        #image_embeds = vision_outputs[0]
+        vision_outputs = self.vision_model(
+           pixel_values=pixel_values,
+           output_attentions=output_attentions,
+           output_hidden_states=output_hidden_states,
+           return_dict=return_dict,
+        )
+        image_embeds = vision_outputs[0]
 
         # step 2: forward the query tokens through the QFormer, using the image embeddings for cross-attention
         image_attention_mask = torch.ones(image_embeds.size()[:-1], dtype=torch.long, device=image_embeds.device)
