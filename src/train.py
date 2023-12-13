@@ -3,15 +3,21 @@ import datetime
 import argparse
 import logging
 import torch
+import random
 import warnings
+import numpy as np
 from os.path import join as pjoin
 
 from pytorch_lightning import Trainer
 from pytorch_lightning.callbacks import ModelCheckpoint
-
-
 from wrapper import LightningWrapper
 
+def set_seed(args):
+    random.seed(args.seed)
+    np.random.seed(args.seed)
+    torch.manual_seed(args.seed)
+    torch.cuda.manual_seed_all(args.seed)
+        
 warnings.filterwarnings(action='ignore')
 
 logger = logging.getLogger()
@@ -21,6 +27,11 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='')
     parser.add_argument(
         "--checkpoint_name_or_path",
+        default="Salesforce/instructblip-flan-t5-xxl",
+        type=str,
+    )
+    parser.add_argument(
+        "--backbone",
         default="Salesforce/instructblip-flan-t5-xxl",
         type=str,
     )
@@ -48,6 +59,21 @@ if __name__ == "__main__":
         default='vit'
     )
     parser.add_argument(
+        "--num_classes", 
+        type=int, 
+        default=200
+    )
+    parser.add_argument(
+        "--embedding_size", 
+        type=int, 
+        default=768
+    )
+    parser.add_argument(
+        "--seed", 
+        type=int, 
+        default=42
+    )
+    parser.add_argument(
         "--gpuid", 
         nargs='+', 
         type=int, 
@@ -64,6 +90,7 @@ if __name__ == "__main__":
     parser = Trainer.add_argparse_args(parser)
     args = parser.parse_args()
 
+    set_seed(args)
     logging.info(args)
     if len(args.gpuid) > 0:
         checkpoint_callback = ModelCheckpoint(
@@ -73,7 +100,7 @@ if __name__ == "__main__":
             save_last=True,
             monitor='train_loss',
             mode='min',
-            prefix='model_'
+            prefix=f'{args.model_name}_'
         )
         # python train_torch.py --train --gpus 1 --max_epochs 3
         model = LightningWrapper(args)

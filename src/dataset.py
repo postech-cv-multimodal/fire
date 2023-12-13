@@ -48,7 +48,7 @@ class CUB_200_2011(Dataset):
                 # pixel_values: (bs, n_attr, c, h, w)
                 # qformer_input_ids: (bs, n_attr, l)
                 # label: (bs, n_attr)
-                cls_id = int(self.data[index]["image_path"].split(".")[0])
+                cls_id = int(self.data[index]["image_path"].split(".")[0]) - 1
                 encoding['label'] = torch.tensor(cls_id, dtype=torch.long).repeat(len(self.attributes))
                 return encoding
 
@@ -93,7 +93,7 @@ class CUB_200_2011_Test(Dataset):
                 # pixel_values: (bs, n_attr, c, h, w)
                 # qformer_input_ids: (bs, n_attr, l)
                 # label: (bs, n_attr)
-                cls_id = int(self.data[index]["image_path"].split(".")[0])
+                cls_id = int(self.data[index]["image_path"].split(".")[0]) - 1
                 encoding['label'] = torch.tensor(cls_id, dtype=torch.long).repeat(len(self.attributes))
                 encoding['image_path'] = image_path
                 return encoding
