@@ -1,0 +1,8 @@
+torch
+tqdm
+einops
+pandas
+Pillow
+transformers
+pytorch_metric_learning
+pytorch_lightning==1.2.10
