@@ -55,7 +55,7 @@ if __name__ == "__main__":
     )
     parser.add_argument(
         "--model_type", 
-        choices=['vit', 'vit+qformer'], 
+        choices=['vit','vit-b', 'vit-l', 'vit+qformer'], 
         default='vit'
     )
     parser.add_argument(
@@ -109,7 +109,7 @@ if __name__ == "__main__":
                     check_val_every_n_epoch=1, 
                     checkpoint_callback=checkpoint_callback, 
                     flush_logs_every_n_steps=100, 
-                    gpus=args.gpuid, 
+                    gpus=-1, 
                     gradient_clip_val=1.0, 
                     log_every_n_steps=50, 
                     logger=True, 

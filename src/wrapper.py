@@ -17,6 +17,9 @@ from dataset import CUB_200_2011
 from vit import VitForImageRetrieval
 from instruct_blip import InstructBlipForImageRetrieval
 
+from transformers import ViTImageProcessor, ViTForImageClassification, ViTModel
+
+
 class LightningWrapper(LightningModule):
     def __init__(self, hparams, **kwargs):
         super(LightningWrapper, self).__init__()
@@ -27,7 +30,7 @@ class LightningWrapper(LightningModule):
             self.model = InstructBlipForImageRetrieval.from_pretrained(hparams.backbone)
         else:
             self.model = VitForImageRetrieval.from_pretrained(hparams.backbone)
-        
+            
         self.distance = distances.CosineSimilarity()
         self.reducer = reducers.ThresholdReducer(low=hparams.low)
         self.margin_loss = losses.TripletMarginLoss(margin=hparams.margin, 
@@ -109,7 +112,7 @@ class LightningWrapper(LightningModule):
             out= self.model(pixel_values=batch['pixel_values'][:, 0, :, :].squeeze())
         else:
             out = self.get_latent_feature_for_vitqformer(batch)
-            
+        
         hard_pairs = self.mining_func(out, labels)
         tr_margin_loss = self.margin_loss(out, labels, hard_pairs)
         tr_pa_loss = self.pa_loss(out, labels, hard_pairs)

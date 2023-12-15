@@ -103,4 +103,4 @@ class CUB_200_2011_Test(Dataset):
                 index = random.choice(range(len(self.data)))
         
         return None
-    
+ 
